@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "f92da026-b8f5-4b19-8660-e3c9df166fbf",
+		"name": "bank-poc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10769026"
+	},
+	"item": [
+		{
+			"name": "loop-heartbeat-producer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accno\": 65\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/start-heart-beat",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"start-heart-beat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "heartbeat-producer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accno\": 65\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/start-heart-beat",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"start-heart-beat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accno\": 65,\r\n    \"description\": \"New Signup\",\r\n    \"password\": \"prem\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
