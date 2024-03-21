@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: bank-poc-inactivity-kstream
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+  cloud:
+    function:
+      definition: heartbeatBinder
+    stream:
+      kafka:
+        streams:
+          binder:
+            application-id: processor1
+            configuration:
+              '[spring.json.trusted.packages]': '*'
+#              default.value.serde: org.springframework.kafka.support.serializer.JsonDeserializer               
+            deserialization-exception-handler: logAndContinue
+  
+           
+      bindings:
+        heartbeatBinder-in-0.destination: heartbeat
+        heartbeatBinder-in-1.destination: signup-history
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/bank_poc
+    username: prem
+    password: 1234
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8082
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bindings, beans, health, info       
