@@ -35,10 +35,11 @@ public class BankPocInactivityKstreamApplication {
 	@Value("${user.tables.refresh.interval}")
 	private long tables_refresh_interval;
 	
-
-	
     @Value("${user.heartbeat.monitoring.interval}")
 	private long heartbeat_monitoring_interval;
+
+    @Value("${user.heartbeat.monitoring.timeDifference}")
+	private long heartbeat_monitoring_time_difference;
 
 	@Autowired
 	CustomerRepository customerRepository;
@@ -66,7 +67,7 @@ public class BankPocInactivityKstreamApplication {
 		List<Customer> allCustomers;
 		while (true) {
 			isTablesRefreshing.set(true);
-			System.out.print("refreshing...");
+			System.out.print("refreshing internal tables...");
 			allCustomers = customerRepository.findAll();
 			allCustomers.forEach(i -> {
 				if (tsMapRepository.existsById(i.getAccno())) {
@@ -97,7 +98,7 @@ public class BankPocInactivityKstreamApplication {
 			tsMapRepository.findAll().forEach(tsMap -> {
 				Long nTS = tsMap.getLastTimestamp() == null ? null : tsMap.getLastTimestamp().getTime();
 				Long currentTs = Timestamp.from(Instant.now()).getTime();
-				if (nTS == null || currentTs - nTS > 21000) {
+				if (nTS == null || currentTs - nTS > (heartbeat_monitoring_time_difference == 0 ? 5000 : heartbeat_monitoring_time_difference)) {
 					System.out.println("User: " + tsMap.getAccno() + " No heartbeat detected");
 				}
 			});

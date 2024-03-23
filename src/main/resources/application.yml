@@ -20,6 +20,7 @@ spring:
            
       bindings:
         heartbeatBinder-in-0.destination: heartbeat
+#        heartbeatBinder-out-0.destination: result
 
   datasource:
     url: jdbc:mysql://localhost:3306/bank_poc
@@ -47,7 +48,9 @@ management:
 user:
   heartbeat:
     monitoring:
-      interval: 6000
+      interval: 30000
+      timeDifference: 20000
+      
   tables:
     refresh:
-      interval: 5500
+      interval: 10000

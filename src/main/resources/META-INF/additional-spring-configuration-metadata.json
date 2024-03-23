@@ -8,5 +8,10 @@
     "name": "user.tables.refresh.interval",
     "type": "java.lang.Long",
     "description": "Time interval in miliseconds after which all the tables and streams will be refreshed. It is a thread based monitoring, thead runs after every 'user.tables.refresh.interval'"
+  },
+  {
+    "name": "user.heartbeat.monitoring.timeDifference",
+    "type": "java.lang.String",
+    "description": "The maximum time difference in milliseconds, for which a user is supposed to be online"
   }
 ]}
