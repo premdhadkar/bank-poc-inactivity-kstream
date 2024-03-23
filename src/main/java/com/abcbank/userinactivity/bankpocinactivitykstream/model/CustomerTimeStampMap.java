@@ -16,13 +16,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Entity(name = "customer_two_timestamp_map")
-public class CustomerNMinusTwoTimeStampMap {
+@Entity(name = "customer_timestamp_map")
+public class CustomerTimeStampMap {
 	@Id
 	public Integer accno;
 
-	public Timestamp Ntimestamp;
-
-	public Timestamp NMinus1Timestamp;
+	public Timestamp lastTimestamp;
 
 }

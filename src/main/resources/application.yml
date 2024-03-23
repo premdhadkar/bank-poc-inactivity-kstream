@@ -20,7 +20,6 @@ spring:
            
       bindings:
         heartbeatBinder-in-0.destination: heartbeat
-        heartbeatBinder-in-1.destination: signup-history
 
   datasource:
     url: jdbc:mysql://localhost:3306/bank_poc
@@ -44,3 +43,11 @@ management:
     web:
       exposure:
         include: bindings, beans, health, info       
+
+user:
+  heartbeat:
+    monitoring:
+      interval: 6000
+  tables:
+    refresh:
+      interval: 5500

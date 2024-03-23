@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "user.heartbeat.monitoring.interval",
+    "type": "java.lang.Long",
+    "description": "Time interval in miliseconds after which the monitoring is done. It is a thread based monitoring, thead runs after every 'user.heartbeat.monitoring.interval'"
+  },
+  {
+    "name": "user.tables.refresh.interval",
+    "type": "java.lang.Long",
+    "description": "Time interval in miliseconds after which all the tables and streams will be refreshed. It is a thread based monitoring, thead runs after every 'user.tables.refresh.interval'"
+  }
+]}
