@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.abcbank.userinactivity.bankpocinactivitykstream.model.CustomerTimeStampMap;
 
-public interface CustomerNMinusTwoTimeStampMapRepository extends JpaRepository<CustomerTimeStampMap, Integer> {
+public interface CustomerTimeStampMapRepository extends JpaRepository<CustomerTimeStampMap, Integer> {
 
 }

@@ -13,5 +13,10 @@
     "name": "user.heartbeat.monitoring.timeDifference",
     "type": "java.lang.String",
     "description": "The maximum time difference in milliseconds, for which a user is supposed to be online"
+  },
+  {
+    "name": "customerMicroserviceUrl",
+    "type": "java.lang.String",
+    "description": "url for All Customer's Microservice"
   }
 ]}

@@ -12,24 +12,29 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
-import com.abcbank.userinactivity.bankpocinactivitykstream.model.Customer;
 import com.abcbank.userinactivity.bankpocinactivitykstream.model.CustomerTimeStampMap;
-import com.abcbank.userinactivity.bankpocinactivitykstream.repository.CustomerNMinusTwoTimeStampMapRepository;
-import com.abcbank.userinactivity.bankpocinactivitykstream.repository.CustomerRepository;
+import com.abcbank.userinactivity.bankpocinactivitykstream.repository.CustomerTimeStampMapRepository;
+import com.abcbank.userinactivity.bankpocproducer.model.Customer;
 
 @EnableScheduling
 @SpringBootApplication
 @Transactional
+
 public class BankPocInactivityKstreamApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BankPocInactivityKstreamApplication.class, args);
 	}
 
-	private static Consumer<KStream<Integer, com.abcbank.userinactivity.bankpocproducer.model.Customer>> func;
+	private static Consumer<KStream<Integer,Customer>> func;
+	
 	private static AtomicBoolean isTablesRefreshing = new AtomicBoolean(false);
 
 	@Value("${user.tables.refresh.interval}")
@@ -41,11 +46,13 @@ public class BankPocInactivityKstreamApplication {
     @Value("${user.heartbeat.monitoring.timeDifference}")
 	private long heartbeat_monitoring_time_difference;
 
-	@Autowired
-	CustomerRepository customerRepository;
+    @Value("${customerMicroserviceUrl}")
+	private String customerMicroserviceUrl;
+
 
 	@Autowired
-	CustomerNMinusTwoTimeStampMapRepository tsMapRepository;
+	CustomerTimeStampMapRepository tsMapRepository;
+	
 
 	@Bean
 	Consumer<KStream<Integer, com.abcbank.userinactivity.bankpocproducer.model.Customer>> heartbeatBinder() {
@@ -63,12 +70,33 @@ public class BankPocInactivityKstreamApplication {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public void refreshMapsStreamsAndTables() {
+		RestTemplate restTemplate = new RestTemplate();
 		List<Customer> allCustomers;
 		while (true) {
 			isTablesRefreshing.set(true);
 			System.out.print("refreshing internal tables...");
-			allCustomers = customerRepository.findAll();
+			
+			
+			
+			String url =  customerMicroserviceUrl + "/getAllCustomers";
+	        
+	        ResponseEntity<List<Customer>> response = restTemplate.exchange(
+	            url,
+	            HttpMethod.GET,
+	            null,
+	            new ParameterizedTypeReference<List<Customer>>() {}
+	        );
+
+	        if (response.getStatusCode().is2xxSuccessful()) {
+	            allCustomers = response.getBody();
+	        } else {
+	            throw new RuntimeException("Failed to fetch customers. Status code: " + response.getStatusCodeValue());
+	        }
+			
+			
+			
 			allCustomers.forEach(i -> {
 				if (tsMapRepository.existsById(i.getAccno())) {
 					return;

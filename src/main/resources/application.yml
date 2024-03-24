@@ -54,3 +54,6 @@ user:
   tables:
     refresh:
       interval: 10000
+      
+      
+customerMicroserviceUrl: "http://localhost:8080"
