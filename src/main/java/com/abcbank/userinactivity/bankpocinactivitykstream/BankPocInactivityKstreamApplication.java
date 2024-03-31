@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -33,20 +33,20 @@ public class BankPocInactivityKstreamApplication {
 		SpringApplication.run(BankPocInactivityKstreamApplication.class, args);
 	}
 
-	private static Consumer<KStream<Integer,Customer>> func;
-	
+	private static Consumer<KStream<Integer, Customer>> func;
+
 	private static AtomicBoolean isTablesRefreshing = new AtomicBoolean(false);
 
 	@Value("${user.tables.refresh.interval}")
 	private long tables_refresh_interval;
-	
-    @Value("${user.heartbeat.monitoring.interval}")
+
+	@Value("${user.heartbeat.monitoring.interval}")
 	private long heartbeat_monitoring_interval;
 
-    @Value("${user.heartbeat.monitoring.timeDifference}")
+	@Value("${user.heartbeat.monitoring.timeDifference}")
 	private long heartbeat_monitoring_time_difference;
 
-    @Value("${customerMicroserviceUrl}")
+	@Value("${customerMicroserviceUrl}")
 	private String customerMicroserviceUrl;
 
 
@@ -54,12 +54,12 @@ public class BankPocInactivityKstreamApplication {
 	CustomerTimeStampMapRepository tsMapRepository;
 	
 
-	@Bean
-	Consumer<KStream<Integer, com.abcbank.userinactivity.bankpocproducer.model.Customer>> heartbeatBinder() {
+	
+	Consumer<KStream<Integer, Customer>> heartbeatBinder() {
 		tsMapRepository.deleteAll();
 		new Thread(() -> refreshMapsStreamsAndTables()).start();
 		func = (heartBeatStream) -> {
-			heartBeatStream.foreach((key, value)->{
+			heartBeatStream.foreach((key, value) -> {
 				CustomerTimeStampMap tsMapUser = tsMapRepository.findById(key).orElseThrow();
 				tsMapUser.setLastTimestamp(value.getTimestamp());
 				tsMapRepository.save(tsMapUser);
@@ -80,20 +80,20 @@ public class BankPocInactivityKstreamApplication {
 			
 			
 			
-			String url =  customerMicroserviceUrl + "/getAllCustomers";
-	        
-	        ResponseEntity<List<Customer>> response = restTemplate.exchange(
-	            url,
-	            HttpMethod.GET,
-	            null,
-	            new ParameterizedTypeReference<List<Customer>>() {}
-	        );
+			String url = customerMicroserviceUrl + "/getAllCustomers";
 
-	        if (response.getStatusCode().is2xxSuccessful()) {
-	            allCustomers = response.getBody();
-	        } else {
-	            throw new RuntimeException("Failed to fetch customers. Status code: " + response.getStatusCodeValue());
-	        }
+			ResponseEntity<List<Customer>> response = restTemplate.exchange(
+				url, 
+				HttpMethod.GET, 
+				null,
+				new ParameterizedTypeReference<List<Customer>>() {}
+				);
+
+			if (response.getStatusCode().is2xxSuccessful()) {
+				allCustomers = response.getBody();
+			} else {
+				throw new RuntimeException("Failed to fetch customers. Status code: " + response.getStatusCodeValue());
+			}
 			
 			
 			

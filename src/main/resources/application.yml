@@ -6,21 +6,27 @@ spring:
       - localhost:9092
   cloud:
     function:
-      definition: heartbeatBinder
+      definition: heartbeatBinder;transactionMonitoring
     stream:
       kafka:
         streams:
           binder:
-            application-id: processor1
+            application-id: processor12
             configuration:
               '[spring.json.trusted.packages]': '*'
-#              default.value.serde: org.springframework.kafka.support.serializer.JsonDeserializer               
+              default.value.serde: com.abcbank.userinactivity.bankpocinactivitykstream.serdes.CustomSerdes$CustomerSerde                
             deserialization-exception-handler: logAndContinue
+  
+          bindings:
+            transactionMonitoring-out-0:
+              producer:
+                keySerde: 
   
            
       bindings:
         heartbeatBinder-in-0.destination: heartbeat
-#        heartbeatBinder-out-0.destination: result
+        transactionMonitoring-in-0.destination: transactions
+        transactionMonitoring-out-0.destination: triggers
 
   datasource:
     url: jdbc:mysql://localhost:3306/bank_poc
@@ -53,7 +59,7 @@ user:
       
   tables:
     refresh:
-      interval: 10000
+      interval: 5000
       
       
 customerMicroserviceUrl: "http://localhost:8080"

@@ -26,5 +26,7 @@ public class Customer {
 	public Timestamp timestamp;
 
 	public String password;
+	
+	public Float transaction;
 
 }
